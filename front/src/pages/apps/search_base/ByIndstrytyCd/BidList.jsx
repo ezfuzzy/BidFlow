@@ -8,16 +8,38 @@ const formatDate = (datetime) => datetime?.split(" ")[0]
 
 const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
   const [selected, setSelected] = useState(null)
+  const [pageGroupStart, setPageGroupStart] = useState(1)
+  const pagesPerGroup = 10
+
+  const totalPageGroups = Math.ceil(totalPages / pagesPerGroup)
+  const currentGroup = Math.floor((currentPage - 1) / pagesPerGroup)
+  const pageNumbers = Array.from({ length: Math.min(pagesPerGroup, totalPages - currentGroup * pagesPerGroup) }, (_, i) => currentGroup * pagesPerGroup + i + 1)
+
+  const goToPage = (page) => {
+    onPageChange(page)
+  }
+
+  const goToPrevGroup = () => {
+    if (currentGroup > 0) {
+      const prevGroupStart = (currentGroup - 1) * pagesPerGroup + 1
+      onPageChange(prevGroupStart)
+    }
+  }
+
+  const goToNextGroup = () => {
+    if (currentGroup < totalPageGroups - 1) {
+      const nextGroupStart = (currentGroup + 1) * pagesPerGroup + 1
+      onPageChange(nextGroupStart)
+    }
+  }
 
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {items.map((item) => (
-          <div key={item.bidNtceNo} className="border rounded-lg p-4 shadow hover:bg-gray-50 transition">
+          <div key={`${item.bidNtceNo}-${item.listOrder}`} className="border rounded-lg p-4 shadow hover:bg-gray-50 transition">
             <div className="text-xs text-gray-400 mb-1">#{item.listOrder}</div>
-            <h2
-              className="text-blue-600 font-bold text-lg cursor-pointer hover:underline"
-              onClick={() => setSelected(item)}>
+            <h2 className="text-blue-600 font-bold text-lg cursor-pointer hover:underline" onClick={() => setSelected(item)}>
               {item.bidNtceNm}
             </h2>
             <p>
@@ -33,14 +55,9 @@ const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
               <span className="text-purple-700">개찰:</span> {formatDate(item.opengDt)}
             </p>
             <p>
-              <span className="text-red-700">예정가격:</span>{" "}
-              {item.presmptPrce ? parseInt(item.presmptPrce).toLocaleString() : "-"}원
+              <span className="text-red-700">예정가격:</span> {item.presmptPrce ? parseInt(item.presmptPrce).toLocaleString() : "-"}원
             </p>
-            <a
-              href={item.bidNtceDtlUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 underline mt-2 inline-block">
+            <a href={item.bidNtceDtlUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline mt-2 inline-block">
               나라장터 상세보기
             </a>
           </div>
@@ -48,21 +65,20 @@ const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
       </div>
 
       {/* 페이징 */}
-      <div className="flex justify-center mt-6 gap-2">
-        <button
-          disabled={currentPage === 1}
-          onClick={() => onPageChange(currentPage - 1)}
-          className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200">
-          이전
+      <div className="flex justify-center mt-6 gap-1 flex-wrap">
+        <button onClick={goToPrevGroup} disabled={currentGroup === 0} className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200">
+          ◀
         </button>
-        <span className="px-4 text-sm font-medium">
-          Page {currentPage} / {totalPages}
-        </span>
-        <button
-          disabled={currentPage === totalPages}
-          onClick={() => onPageChange(currentPage + 1)}
-          className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200">
-          다음
+        {pageNumbers.map((page) => (
+          <button
+            key={page}
+            onClick={() => goToPage(page)}
+            className={`px-3 py-1 border rounded ${page === currentPage ? "bg-blue-600 text-white" : "bg-gray-100 hover:bg-gray-200"}`}>
+            {page}
+          </button>
+        ))}
+        <button onClick={goToNextGroup} disabled={currentGroup === totalPageGroups - 1} className="px-3 py-1 border rounded bg-gray-100 hover:bg-gray-200">
+          ▶
         </button>
       </div>
 
@@ -96,20 +112,13 @@ const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
             const file = selected[`ntceSpecDocUrl${i + 1}`]
             const name = selected[`ntceSpecFileNm${i + 1}`]
             return file ? (
-              <a
-                key={i}
-                href={file}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-blue-500 underline">
+              <a key={i} href={file} target="_blank" rel="noopener noreferrer" className="block text-blue-500 underline">
                 📄 {name}
               </a>
             ) : null
           })}
           <div className="mt-4 flex justify-end">
-            <button
-              onClick={() => setSelected(null)}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            <button onClick={() => setSelected(null)} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
               닫기
             </button>
           </div>

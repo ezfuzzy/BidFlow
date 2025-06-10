@@ -17,16 +17,23 @@ const formatDate = (date, end = false) => {
 }
 
 const SearchByIndstrytyCd = () => {
+  const today = new Date()
+  today.setHours(23, 59, 0, 0)
+
+  const start = new Date()
+  start.setHours(0, 0, 0, 0)
+  start.setDate(start.getDate() - 31)
+
   const [bidNtceNm, setBidNtceNm] = useState("")
   const [indstrytyCd, setIndstrytyCd] = useState("")
   const [activeCode, setActiveCode] = useState(null)
-  const [startDate, setStartDate] = useState(new Date(new Date().setDate(new Date().getDate() - 30)))
-  const [endDate, setEndDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(start)
+  const [endDate, setEndDate] = useState(today)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
-  const [totalCount, setTotalCount] = useState(0)
+  const [totalCount, setTotalCount] = useState(null)
   const rowsPerPage = 20
 
   const fetchData = async (code = null, page = 1) => {
@@ -40,7 +47,7 @@ const SearchByIndstrytyCd = () => {
 
     const baseUrl = "http://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoServcPPSSrch"
     const queryParams = {
-      inqryDiv: "1",
+      inqryDiv: "2", // 1 : 공고일 기준 검색 2 : 개찰일 기준 검색
       pageNo: page.toString(),
       numOfRows: rowsPerPage.toString(),
       inqryBgnDt: formatDate(startDate),
@@ -81,15 +88,14 @@ const SearchByIndstrytyCd = () => {
   }
 
   const resetForm = () => {
-    const today = new Date()
-    const lastMonth = new Date(new Date().setDate(today.getDate() - 30))
     setIndstrytyCd("")
     setActiveCode(null)
-    setStartDate(lastMonth)
+    setStartDate(start)
     setEndDate(today)
     setData([])
     setError(null)
     setCurrentPage(1)
+    setTotalCount(null)
   }
 
   const totalPages = Math.ceil(totalCount / rowsPerPage)
@@ -112,12 +118,16 @@ const SearchByIndstrytyCd = () => {
           />
         </div>
 
-        {/* 검색 시작일과 종료일 */}
+        {/* 공고일or개찰일 기준 검색 -  시작일과 종료일 */}
         <div>
           <label className="block text-sm font-medium mb-1">시작일</label>
           <DatePicker
             selected={startDate}
-            onChange={(date) => setStartDate(date)}
+            onChange={(date) => {
+              const adjusted = new Date(date)
+              adjusted.setHours(0, 0, 0, 0)
+              setStartDate(adjusted)
+            }}
             dateFormat="yyyy-MM-dd"
             className="border p-2 rounded"
           />
@@ -126,7 +136,11 @@ const SearchByIndstrytyCd = () => {
           <label className="block text-sm font-medium mb-1">종료일</label>
           <DatePicker
             selected={endDate}
-            onChange={(date) => setEndDate(date)}
+            onChange={(date) => {
+              const adjusted = new Date(date)
+              adjusted.setHours(23, 59, 0, 0)
+              setEndDate(adjusted)
+            }}
             dateFormat="yyyy-MM-dd"
             className="border p-2 rounded"
           />
@@ -146,6 +160,8 @@ const SearchByIndstrytyCd = () => {
               placeholder="Enter indstrytyCd"
               className="border p-2 rounded w-48"
             />
+          </div>
+          <div>
             <button
               onClick={() => {
                 setCurrentPage(1)
@@ -154,7 +170,7 @@ const SearchByIndstrytyCd = () => {
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
               검색
             </button>
-            <button onClick={resetForm} className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+            <button onClick={resetForm} className="bg-gray-300 text-gray-800 mx-4 px-4 py-2 rounded hover:bg-gray-400">
               초기화
             </button>
           </div>
@@ -166,9 +182,7 @@ const SearchByIndstrytyCd = () => {
           <button
             key={code}
             onClick={() => handleCodeClick(code)}
-            className={`px-4 py-2 rounded border ${
-              activeCode === code ? "bg-blue-600 text-white" : "bg-gray-100 hover:bg-gray-200"
-            }`}>
+            className={`px-4 py-2 rounded border ${activeCode === code ? "bg-blue-600 text-white" : "bg-gray-100 hover:bg-gray-200"}`}>
             {code}
           </button>
         ))}
@@ -176,9 +190,8 @@ const SearchByIndstrytyCd = () => {
 
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
-      {data.length > 0 && (
-        <BidList items={data} currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-      )}
+      {totalCount && <p className="text-black-500 mb-5">총 {totalCount}개 검색됨</p>}
+      {data.length > 0 && <BidList items={data} currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
     </div>
   )
 }
