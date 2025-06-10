@@ -1,6 +1,6 @@
 export const appList = [
   {
-    to: "/A",
+    to: "/search_base/ByIndstrytyCd",
     img: "/images/dummy/ezfz.png",
     alt: "A Thumbnail",
     title: "업종코드 기반 검색",
@@ -54,6 +54,8 @@ export const appList = [
     title: "Another Simulator",
   },
 ]
+
+
 
 export const myLinkList = [
   { href: "https://github.com/ezfuzzy", alt: "GitHub", src: "https://img.icons8.com/ios-filled/50/000000/github.png" },

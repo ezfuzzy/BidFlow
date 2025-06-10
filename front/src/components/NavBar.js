@@ -1,61 +1,61 @@
-import React, { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { myContactList } from "../constants/mapping"
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { myContactList } from "../constants/mapping";
 
 function NavBar() {
-  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false)
-  const [isContactOpen, setIsContactOpen] = useState(false)
-  const [contactPosition, setContactPosition] = useState({ top: "50%", left: "50%" })
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [contactPosition, setContactPosition] = useState({ top: "50%", left: "50%" });
   // eslint-disable-next-line no-unused-vars
-  const [mouseOverCount, setMouseOverCount] = useState(0)
+  const [mouseOverCount, setMouseOverCount] = useState(0);
 
-  const toggleSideMenu = () => setIsSideMenuOpen((prev) => !prev)
-  const toggleContact = () => setIsContactOpen((prev) => !prev)
+  const toggleSideMenu = () => setIsSideMenuOpen((prev) => !prev);
+  const toggleContact = () => setIsContactOpen((prev) => !prev);
 
   const handleBookmark = () => {
-    const bookmarkContainer = document.getElementById("bookmark-container")
+    const bookmarkContainer = document.getElementById("bookmark-container");
     if (bookmarkContainer) {
       for (let i = 0; i < 4; i++) {
-        const newStar = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-        newStar.setAttribute("class", "w-6 h-6 text-yellow-500 animate-spin")
-        newStar.setAttribute("fill", "currentColor")
-        newStar.setAttribute("viewBox", "0 0 20 20")
-        newStar.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+        const newStar = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        newStar.setAttribute("class", "w-6 h-6 text-yellow-500 animate-spin");
+        newStar.setAttribute("fill", "currentColor");
+        newStar.setAttribute("viewBox", "0 0 20 20");
+        newStar.setAttribute("xmlns", "http://www.w3.org/2000/svg");
 
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path")
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute(
           "d",
           "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.97a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.392 2.46a1 1 0 00-.364 1.118l1.286 3.97c.3.921-.755 1.688-1.54 1.118l-3.392-2.46a1 1 0 00-1.176 0l-3.392 2.46c-.784.57-1.84-.197-1.54-1.118l1.286-3.97a1 1 0 00-.364-1.118L2.049 9.397c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.97z"
-        )
-        newStar.appendChild(path)
-        bookmarkContainer.appendChild(newStar)
+        );
+        newStar.appendChild(path);
+        bookmarkContainer.appendChild(newStar);
       }
     } else {
-      console.error("Bookmark container not found")
+      console.error("Bookmark container not found");
     }
-    alert("컨트롤 + D를 눌러 즐겨찾기를 추가해주세요 :)")
-  }
+    alert("컨트롤 + D를 눌러 즐겨찾기를 추가해주세요 :)");
+  };
 
   useEffect(() => {
     if (isContactOpen) {
-      const contactElement = document.getElementById("contact-element")
+      const contactElement = document.getElementById("contact-element");
       const handleMouseOver = () => {
         setMouseOverCount((prevCount) => {
           if (prevCount < 5) {
-            const randomTop = `${Math.floor(Math.random() * 80) + 10}%`
-            const randomLeft = `${Math.floor(Math.random() * 80) + 10}%`
-            setContactPosition({ top: randomTop, left: randomLeft })
-            return prevCount + 1
+            const randomTop = `${Math.floor(Math.random() * 80) + 10}%`;
+            const randomLeft = `${Math.floor(Math.random() * 80) + 10}%`;
+            setContactPosition({ top: randomTop, left: randomLeft });
+            return prevCount + 1;
           } else {
-            contactElement.removeEventListener("mouseover", handleMouseOver)
-            return prevCount
+            contactElement.removeEventListener("mouseover", handleMouseOver);
+            return prevCount;
           }
-        })
-      }
-      contactElement.addEventListener("mouseover", handleMouseOver)
-      return () => contactElement.removeEventListener("mouseover", handleMouseOver)
+        });
+      };
+      contactElement.addEventListener("mouseover", handleMouseOver);
+      return () => contactElement.removeEventListener("mouseover", handleMouseOver);
     }
-  }, [isContactOpen])
+  }, [isContactOpen]);
 
   return (
     <>
@@ -89,13 +89,13 @@ function NavBar() {
                       rel="noopener noreferrer"
                       target="_blank"
                       className="font-bold text-gray-600 hover:text-blue-800 hover:border-b-2 hover:border-blue-800 transition duration-300">
-                      {index === 0 ? "Home" : index === 1 ? "Blog" : "ezfuzzy's career"}
+                      {index === 0 ? "Home" : index === 1 ? "Blog" : "Cafe"}
                     </a>
                   ) : (
                     <Link
                       to={link}
                       className="font-bold text-gray-600 hover:text-blue-800 hover:border-b-2 hover:border-blue-800 transition duration-300">
-                      {index === 0 ? "Home" : "ezfuzzy's career"}
+                      {index === 0 ? "Home" : "Cafe"}
                     </Link>
                   )}
                 </li>
@@ -127,7 +127,7 @@ function NavBar() {
             <Link
               to="/"
               className="text-2xl font-bold text-gray-800 hover:text-gray-700 transition duration-300 mx-auto">
-              <img src="/images/logos/ezfuzzy-main.png" alt="Fuzzy Logo" className="mx-auto w-48" />
+              <img src="/images/logos/wasrem_main.jpg" alt="Fuzzy Logo" className="mx-auto w-48" />
             </Link>
           </div>
         </div>
@@ -181,8 +181,8 @@ function NavBar() {
                 <button
                   className="font-bold text-gray-600 hover:text-gray-800 transition duration-300"
                   onClick={() => {
-                    toggleSideMenu()
-                    toggleContact()
+                    toggleSideMenu();
+                    toggleContact();
                   }}>
                   Contact
                 </button>
@@ -223,7 +223,7 @@ function NavBar() {
         </>
       )}
     </>
-  )
+  );
 }
 
-export default NavBar
+export default NavBar;

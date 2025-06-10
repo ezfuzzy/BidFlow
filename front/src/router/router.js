@@ -2,20 +2,18 @@ import React from "react"
 import { createHashRouter } from "react-router-dom"
 import App from "../App"
 import Home from "../pages/Home"
-import GraphVisualizer from "../pages/apps/simulators/graph-simulator/GraphVisualizer"
-import TicTacToe from "../pages/apps/sockets/tic-tac-toe/Tictactoe"
-import MemorySimulator from "../pages/apps/simulators/memory-simulator/MemorySimulator"
-import KakaoMap from "../pages/apps/simulators/map-api/KakaoMap"
+import SearchByIndstrytyCd from "../pages/apps/search_base/ByIndstrytyCd/SearchByIndstrytyCd"
+
 
 const routes = [
   { path: "/", element: <Home /> },
 
   // Apps
 
-  { path: "/A", element: <TicTacToe /> },
-  { path: "/B", element: <GraphVisualizer /> },
-  { path: "/C", element: <MemorySimulator /> },
-  { path: "/D", element: <KakaoMap /> },
+  { path: "/search_base/ByIndstrytyCd", element: <SearchByIndstrytyCd /> },
+  { path: "/search_base/ByIndstrytyCd/", element: <SearchByIndstrytyCd /> },
+  { path: "/search_base/ByIndstrytyCd/", element: <SearchByIndstrytyCd /> },
+  { path: "/search_base/ByIndstrytyCd/", element: <SearchByIndstrytyCd /> },
 ]
 
 const router = createHashRouter([
