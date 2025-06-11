@@ -8,7 +8,6 @@ const formatDate = (datetime) => datetime?.split(" ")[0]
 
 const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
   const [selected, setSelected] = useState(null)
-  const [pageGroupStart, setPageGroupStart] = useState(1)
   const pagesPerGroup = 10
 
   const totalPageGroups = Math.ceil(totalPages / pagesPerGroup)
@@ -55,7 +54,10 @@ const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
               <span className="text-purple-700">개찰:</span> {formatDate(item.opengDt)}
             </p>
             <p>
-              <span className="text-red-700">예정가격:</span> {item.presmptPrce ? parseInt(item.presmptPrce).toLocaleString() : "-"}원
+              <span className="text-red-500">기초금액:</span> {item.asignBdgtAmt ? parseInt(item.asignBdgtAmt).toLocaleString() : "-"}원
+            </p>
+            <p>
+              <span className="text-red-700">추정가격:</span> {item.presmptPrce ? parseInt(item.presmptPrce).toLocaleString() : "-"}원
             </p>
             <a href={item.bidNtceDtlUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline mt-2 inline-block">
               나라장터 상세보기
@@ -94,6 +96,9 @@ const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
             <strong>기관:</strong> {selected.ntceInsttNm}
           </p>
           <p>
+            <strong>발주처:</strong> {selected.rgstTyNm}
+          </p>
+          <p>
             <strong>계약방법:</strong> {selected.cntrctCnclsMthdNm}
           </p>
           <p>
@@ -103,7 +108,13 @@ const BidList = ({ items, currentPage, totalPages, onPageChange }) => {
             <strong>담당자:</strong> {selected.ntceInsttOfclNm} ({selected.ntceInsttOfclTelNo})
           </p>
           <p>
-            <strong>예정가격:</strong> {selected.presmptPrce ? parseInt(selected.presmptPrce).toLocaleString() : "-"}원
+            <strong>낙찰하한율:</strong> {selected.sucsfbidLwltRate || "-"}
+          </p>
+          <p>
+            <strong>기초금액:</strong> {selected.asignBdgtAmt ? parseInt(selected.asignBdgtAmt).toLocaleString() : "-"}원
+          </p>
+          <p>
+            <strong>추정가격:</strong> {selected.presmptPrce ? parseInt(selected.presmptPrce).toLocaleString() : "-"}원
           </p>
           <p className="mt-2">
             <strong>첨부파일:</strong>
